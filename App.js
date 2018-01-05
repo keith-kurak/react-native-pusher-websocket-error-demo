@@ -22,7 +22,17 @@ export default class App extends Component {
     const pusherChannel = this._pusherSocket.subscribe(CHANNEL_NAME);
     
     this._pusherSocket.connection.bind('error', err => {
-      Alert.alert('Connection error (probably WebSocket error)!', JSON.stringify(err));
+      var seen = [];
+      errorMessage = JSON.stringify(err, function(key, val) {
+          if (val != null && typeof val == "object") {
+                if (seen.indexOf(val) >= 0) {
+                    return;
+                }
+                seen.push(val);
+            }
+            return val;
+        });
+      Alert.alert('Connection error (probably WebSocket error)!', errorMessage);
       console.log('connection error (probably WebSocket error)!');
       console.log(err);
     });
